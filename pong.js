@@ -48,10 +48,12 @@ Paddle.prototype.render = function() {
 
 function Player() {
     this.paddle = new Paddle(175, 580, 50, 10);
+    this.score = 0;
 };
 
 function Computer() {
     this.paddle = new Paddle(175, 10, 50, 10);
+    this.score = 0;
 };
 
 Player.prototype.render = function() {
