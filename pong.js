@@ -32,28 +32,31 @@ var render = function() {
     context.fillRect(0, 0, width, height);
 };
 
-function Paddle(x, y, width, height) {
+function Paddle(x, y, width, height, color) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.x_speed = 0;
     this.y_speed = 0;
+    this.color = color;
 };
 
 Paddle.prototype.render = function() {
-    context.fillStyle = "#0000FF";
+    context.fillStyle = this.color;
     context.fillRect(this.x, this.y, this.width, this.height);
 };
 
 function Player() {
-    this.paddle = new Paddle(175, 580, 50, 10);
+    this.paddle = new Paddle(175, 580, 50, 10, "#2F99B3");
     this.score = 0;
+    this.possession = false;
 };
 
 function Computer() {
-    this.paddle = new Paddle(175, 10, 50, 10);
+    this.paddle = new Paddle(175, 10, 50, 10, "#0000FF");
     this.score = 0;
+    this.possession = false;
 };
 
 Player.prototype.render = function() {
@@ -100,7 +103,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
     var top_y = this.y - 5;
     var bottom_x = this.x + 5;
     var bottom_y = this.y + 5;
-  
+    
     if(this.x - 5 < 0) {
       this.x = 5;
       this.x_speed = -this.x_speed;
@@ -114,6 +117,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
       this.y_speed = 3;
       this.x = 200;
       this.y = 300;
+      updateScore();
     }
   
     if(top_y > 300) {
@@ -121,12 +125,16 @@ Ball.prototype.update = function(paddle1, paddle2) {
         this.y_speed = -3;
         this.x_speed += (paddle1.x_speed / 2);
         this.y += this.y_speed;
+        player.possession = true;
+        computer.possession = false;
       }
     } else {
       if(top_y < (paddle2.y + paddle2.height) && bottom_y > paddle2.y && top_x < (paddle2.x + paddle2.width) && bottom_x > paddle2.x) {
         this.y_speed = 3;
         this.x_speed += (paddle2.x_speed / 2);
         this.y += this.y_speed;
+        player.possession = false;
+        computer.possession = true;
       }
     }
 };
@@ -183,3 +191,16 @@ Computer.prototype.update = function(ball) {
       this.paddle.x = 400 - this.paddle.width;
     }
   };
+
+function updateScore() {
+    if(player.possession == true) {
+        player.score += 1;
+        document.getElementById("player").innerHTML = player.score;
+    } else {
+        computer.score += 1;
+        document.getElementById("computer").innerHTML = computer.score;
+    }
+    
+    
+};
+
